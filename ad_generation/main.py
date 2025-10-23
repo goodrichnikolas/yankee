@@ -236,6 +236,12 @@ def generate_ad_crops(base_images_dir, output_base_dir, max_dimension=970, step_
                             crop_folder_path = os.path.join(image_output_dir, crop_folder_name)
                             os.makedirs(crop_folder_path, exist_ok=True)
 
+                            # Save preview image of the crop without text
+                            preview_filename = f"{ad_width}x{ad_height}_{crop_index}.jpg"
+                            preview_path = os.path.join(crop_folder_path, preview_filename)
+                            cropped_img.save(preview_path, quality=95)
+                            logging.debug(f"Saved preview: {preview_filename}")
+
                             # Generate all font size, text, and position combinations
                             for font_size in font_sizes:
                                 # Create subfolder for font size
