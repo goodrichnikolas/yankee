@@ -2,3 +2,7 @@ pandas
 scipy
 pillow
 tqdm
+playwright
+
+# Local AI image generation library (editable install)
+-e /home/nikolas/projects/ai-image-gen
