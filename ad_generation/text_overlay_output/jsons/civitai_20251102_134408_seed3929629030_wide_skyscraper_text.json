@@ -1,0 +1,23 @@
+{
+  "original_image_path": "/home/nikolas/projects/yankee/ad_generation/base_images/20251102_134347_50_year_old_woman_with_silver_hair_spreads_her_ass_seed3929629030/desktop/wide_skyscraper/civitai_20251102_134408_seed3929629030_wide_skyscraper.png",
+  "is_animated_gif": false,
+  "image_width": 160,
+  "image_height": 600,
+  "canvas_width": 1120,
+  "canvas_height": 821,
+  "image_scale": 1.0,
+  "text_items": [
+    {
+      "text": "0_0",
+      "canvas_x": 569,
+      "canvas_y": 504,
+      "img_offset_x": 480.0,
+      "img_offset_y": 110.0,
+      "font_family": "Arial",
+      "font_size": 15,
+      "color": "white",
+      "outline_width": 3,
+      "outline_color": "black"
+    }
+  ]
+}

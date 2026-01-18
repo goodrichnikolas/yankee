@@ -1,0 +1,35 @@
+{
+  "original_image_path": "/home/nikolas/projects/yankee/ad_generation/base_images/20251102_134347_50_year_old_woman_with_silver_hair_spreads_her_ass_seed3929629030/desktop/large_rectangle/gifs/civitai_20251102_134413_seed3929629030_large_rectangle_pan.gif",
+  "is_animated_gif": true,
+  "image_width": 336,
+  "image_height": 280,
+  "canvas_width": 1120,
+  "canvas_height": 821,
+  "image_scale": 1.0,
+  "text_items": [
+    {
+      "text": "SHE'S",
+      "canvas_x": 471,
+      "canvas_y": 479,
+      "img_offset_x": 392.0,
+      "img_offset_y": 270.0,
+      "font_family": "Arial",
+      "font_size": 15,
+      "color": "white",
+      "outline_width": 3,
+      "outline_color": "black"
+    },
+    {
+      "text": "WAITING...",
+      "canvas_x": 654,
+      "canvas_y": 481,
+      "img_offset_x": 392.0,
+      "img_offset_y": 270.0,
+      "font_family": "Arial",
+      "font_size": 15,
+      "color": "white",
+      "outline_width": 3,
+      "outline_color": "black"
+    }
+  ]
+}

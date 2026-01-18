@@ -20,10 +20,10 @@ from generate_civitai import CivitAIGenerator
 # Model path (required)
 # Supports both SD 1.5 and SDXL models - auto-detects based on file size
 # NOTE: Must be a FULL checkpoint, not a LoRA or partial weights
-MODEL_PATH = "/home/nikolas/projects/ai-image-gen/models/jibMixRealisticSD15_v10.safetensors"
+MODEL_PATH = "/home/nikolas/projects/ai-image-gen/models/bigLove_photo2.safetensors"
 
 # Generation parameters
-PROMPT = "50 year old woman with silver hair spreads her ass showing her pink butthole"
+PROMPT = "40 year old woman with blonde hair spreads her ass with cum smeared all over it"
 NEGATIVE_PROMPT = "blurry, low quality, distorted, text, watermark, ugly, bad anatomy"
 
 # Generation settings
@@ -40,34 +40,32 @@ STRENGTH = 0.75  # How much to transform the init image (0.0-1.0)
 
 # Optional: LoRA
 LORA_PATH = "/home/nikolas/projects/ai-image-gen/models/skin_texture.safetensors"
-LORA_WEIGHT = 0.8  # LoRA strength (0.0-1.0)
+LORA_WEIGHT = 0.2  # LoRA strength (0.0-1.0)
 
 # Animated GIF settings
+GENERATE_GIFS = False  # Set to True to generate animated GIF versions, False for static only
 GIF_NUM_FRAMES = 40  # Number of frames in panning animation
 GIF_FRAME_DURATION = 300  # Milliseconds per frame (100ms = 0.1s)
 
 # ==============================================================
 
-# Standard ad sizes (adjusted to be divisible by 8 for Stable Diffusion)
+# JuicyAds network ad sizes (adjusted to be divisible by 8 for Stable Diffusion)
+# Based on available inventory - these are the high-traffic sizes
 AD_SIZES = {
-    # Desktop Ads
+    # High Traffic Desktop Ads
     "desktop": {
-        "medium_rectangle": (304, 248),      # Standard: 300 × 250
-        "leaderboard": (728, 88),             # Standard: 728 × 90
-        "wide_skyscraper": (160, 600),        # Standard: 160 × 600
-        "half_page": (304, 600),              # Standard: 300 × 600
-        "large_rectangle": (336, 280),        # Standard: 336 × 280
-        "billboard": (968, 248),              # Standard: 970 × 250
-        "large_leaderboard": (968, 88),       # Standard: 970 × 90
-        "square": (248, 248),                 # Standard: 250 × 250
+        "300x250_image": (304, 248),          # Standard: 300 × 250 (64.6M impressions)
+        "728x90_leaderboard": (728, 88),      # Standard: 728 × 90 (43.1M impressions)
+        "900x250_billboard": (904, 248),      # Standard: 900 × 250 (3.1M impressions)
+        "250x250_image": (248, 248),          # Standard: 250 × 250 (3.9M impressions)
+        "468x60_banner": (472, 56),           # Standard: 468 × 60 (1.7M impressions)
+        "125x125_img_title": (128, 128),      # Standard: 125 × 125 (1.6M impressions)
+        "150x150_img_title": (152, 152),      # Standard: 150 × 150 (564K impressions)
     },
     # Mobile Ads
     "mobile": {
-        "mobile_leaderboard": (320, 48),      # Standard: 320 × 50
-        "large_mobile_banner": (320, 104),    # Standard: 320 × 100
-        "small_square": (200, 200),           # Standard: 200 × 200
-        "interstitial_portrait": (320, 480),  # Standard: 320 × 480
-        "interstitial_landscape": (480, 320), # Standard: 480 × 320
+        "300x100_mobile": (304, 104),         # Standard: 300 × 100 (28.1M impressions)
+        "300x50_mobile": (304, 48),           # Standard: 300 × 50 (1.5M impressions)
     }
 }
 
@@ -274,9 +272,11 @@ def main():
 
             # Create subfolders for this size
             size_output_dir = os.path.join(output_dir, category, ad_name)
-            gif_output_dir = os.path.join(output_dir, category, ad_name, "gifs")
             os.makedirs(size_output_dir, exist_ok=True)
-            os.makedirs(gif_output_dir, exist_ok=True)
+
+            if GENERATE_GIFS:
+                gif_output_dir = os.path.join(output_dir, category, ad_name, "gifs")
+                os.makedirs(gif_output_dir, exist_ok=True)
 
             # Crop and resize from master image (static)
             ad_image = crop_and_resize_to_ad_size(master_image, width, height)
@@ -287,28 +287,41 @@ def main():
             ad_image.save(filename)
             print(f"✓ static", end=" ")
 
-            # Create animated GIF
-            pan_direction = "↓" if width > height else "→"
-            gif_filename = f"{gif_output_dir}/civitai_{timestamp}_seed{generation_seed}_{ad_name}_pan.gif"
-            create_panning_gif(master_image, width, height, gif_filename,
-                             num_frames=GIF_NUM_FRAMES, duration=GIF_FRAME_DURATION)
-            print(f"✓ gif {pan_direction}")
+            # Create animated GIF (optional)
+            if GENERATE_GIFS:
+                pan_direction = "↓" if width > height else "→"
+                gif_filename = f"{gif_output_dir}/civitai_{timestamp}_seed{generation_seed}_{ad_name}_pan.gif"
+                create_panning_gif(master_image, width, height, gif_filename,
+                                 num_frames=GIF_NUM_FRAMES, duration=GIF_FRAME_DURATION)
+                print(f"✓ gif {pan_direction}")
+            else:
+                print("")  # New line if not generating GIFs
 
     print("\n" + "=" * 80)
     print(f"✓ Successfully created {total_sizes} ad sizes from master image!")
-    print(f"✓ Each size has: static PNG + animated GIF (panning)")
+    if GENERATE_GIFS:
+        print(f"✓ Each size has: static PNG + animated GIF (panning)")
+    else:
+        print(f"✓ Each size has: static PNG only")
     print(f"✓ Master image: {master_image_path}")
     print(f"✓ All ads saved to: {output_dir}")
     print("=" * 80)
 
     # Print summary
     print(f"\nGenerated sizes (all from seed {generation_seed}):")
-    print("Each includes: static image + animated GIF (↓ = top-to-bottom, → = left-to-right)")
-    for category, sizes in AD_SIZES.items():
-        print(f"\n{category.upper()}:")
-        for ad_name, (width, height) in sizes.items():
-            pan_dir = "↓" if width > height else "→"
-            print(f"  • {ad_name}: {width}×{height} {pan_dir}")
+    if GENERATE_GIFS:
+        print("Each includes: static image + animated GIF (↓ = top-to-bottom, → = left-to-right)")
+        for category, sizes in AD_SIZES.items():
+            print(f"\n{category.upper()}:")
+            for ad_name, (width, height) in sizes.items():
+                pan_dir = "↓" if width > height else "→"
+                print(f"  • {ad_name}: {width}×{height} {pan_dir}")
+    else:
+        print("Static images only")
+        for category, sizes in AD_SIZES.items():
+            print(f"\n{category.upper()}:")
+            for ad_name, (width, height) in sizes.items():
+                print(f"  • {ad_name}: {width}×{height}")
 
     return 0
 
